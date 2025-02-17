@@ -1,0 +1,15 @@
+---
+- name: Listen for events on dt_webhook
+  hosts: all
+  sources:
+    - dynatrace.event_driven_ansible.dt_webhook:
+        host: 0.0.0.0
+        port: 5005
+        token: '{{ dt_webhook_token }}'
+
+  rules:
+    - name: Problem payload Dynatrace for CPU saturation issue
+      condition: event.payload.eventData is defined
+      action:
+        print_event:
+          pretty: true

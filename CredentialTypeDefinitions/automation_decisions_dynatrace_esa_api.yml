@@ -1,0 +1,28 @@
+---
+- name: Dynatrace ESA API
+  Description: Credential type for use with the Dynatrace event_driven_ansible.dt_esa_api plugin
+  input configuration:
+    fields:
+      - id: dynatrace_host
+        type: string
+        label: Dynatrace API Host
+      - id: dynatrace_token
+        type: string
+        label: Dynatrace API Token
+        secret: true
+      - id: dynatrace_delay
+        type: string
+        label: Problem Retrieval Delay
+        default: 60
+    required:
+      - dynatrace_host
+      - dynatrace_token
+      - dynatrace_delay
+
+  Injector configuration:
+    extra_vars:
+      dynatrace_host: '{{ dynatrace_host }}'
+      dynatrace_delay: '{{ dynatrace_delay }}'
+      dynatrace_token: '{{ dynatrace_token }}'
+
+
