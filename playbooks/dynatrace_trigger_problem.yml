@@ -1,0 +1,26 @@
+---
+- name: Trigger a problem on dynatrace using Events API
+  hosts: all
+  gather_facts: false
+  vars:
+    forced_problem_type: "{{ forced_problem_type_input | default('CPU') }}"
+    forced_problem_type_workers: "{{ forced_problem_type_workers_input | default(2) }}"
+    forced_problem_duration: "{{ forced_problem_duration_input | default(120) }}"
+    issue_timeout: "{{ dynatrace_issue_timeout | default((forced_problem_duration| int )/60) }}"
+  tasks:
+    - name: Generate Dynatrace Problem
+      ansible.builtin.uri:
+        url: "{{ dynatrace_url }}/api/v2/events/ingest"
+        method: POST
+        status_code: [200, 201]
+        body_format: json
+        headers:
+          Content-Type: application/json
+          Authorization: Api-Token {{ dynatrace_token }}
+        body:
+          eventType: RESOURCE_CONTENTION_EVENT
+          title: "{{ forced_problem_type }} saturation"
+          timeout: "{{ issue_timeout | int }}"
+          entitySelector: type(HOST),entityName.equals({{ inventory_hostname }}), healthState(HEALTHY)
+      register: dynatrace_entities_id
+      delegate_to: localhost

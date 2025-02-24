@@ -1,6 +1,6 @@
 # General
 .ansible/*
-
+.vscode/*
 # PY
 .Python
 .installed.cfg

@@ -16,6 +16,7 @@
           name: WF_EDA_Action_Dynatrace_report_and_resolve_saturation_issue
           organization: "{{ job_templates_org_name | default('Foxhound') }}"
           job_args:
+            limit: "{{ event.impactedEntities[0].name }}"
             extra_vars:
               reported_saturation_problem_type: "{{ event.title }}"
               reporting_host: "{{ event.impactedEntities[0].name }}"
