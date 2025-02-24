@@ -4,11 +4,11 @@
   gather_facts: false
   become: true
   tasks:
-  - name: Information Message
-    ansible.builtin.debug:
-      msg: "Attempting to Gather Logs from {{ reporting_host }}"
-      
-  - name: Download log file
-    ansible.builtin.fetch:
-      src: /var/log/dnf.log
-      dest: /tmp
+    - name: Information Message
+      ansible.builtin.debug:
+        msg: "Attempting to Gather Logs from {{ reporting_host }}"
+
+    - name: Download log file
+      ansible.builtin.fetch:
+        src: /var/log/dnf.log
+        dest: /tmp
