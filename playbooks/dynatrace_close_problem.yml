@@ -1,0 +1,20 @@
+---
+- name: Close a problem on dynatrace using the Problems v2 API
+  hosts: all
+  gather_facts: false
+  vars:
+    dynatrace_problem_id: "{{ ansible_eda.event.problemId if (ansible_eda.event is defined and ansible_eda.event.problemId != '') else input_dynatrace_problem_id }}"
+  tasks:
+    - name: Generate Dynatrace Problem
+      ansible.builtin.uri:
+        url: "{{ dynatrace_url }}/api/v2/problems/{{ ansible_eda.event.problemId }}/close"
+        method: POST
+        status_code: [200, 204]
+        body_format: json
+        headers:
+          Content-Type: application/json
+          Authorization: Api-Token {{ dynatrace_token }}
+        body:
+          message: Problem resolved by Ansible
+      register: dynatrace_responce
+      delegate_to: localhost
