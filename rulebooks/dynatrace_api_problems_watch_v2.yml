@@ -1,0 +1,25 @@
+---
+- name: Watching for and resolving cpu and memory saturation Problems from Dynatrace
+  hosts: all
+  sources:
+    - dynatrace.event_driven_ansible.dt_esa_api:
+      # values for dynatrace_host, dynatrace_token and dynatrace_delay are injected through a customer credential type defined in AAP
+        dt_api_host: "{{ dynatrace_host }}"
+        dt_api_token: "{{ dynatrace_token }}"
+        delay: "{{ dynatrace_delay }}"
+
+  rules:
+    - name: Problem payload Dynatrace for CPU saturation issue
+      condition: event.title contains "CPU saturation" or event.title contains "Memory saturation"
+      action:
+        run_workflow_template:
+          name: WF_EDA_Action_Dynatrace_report_and_resolve_saturation_issue
+          organization: "{{ job_templates_org_name | default('Foxhound') }}"
+          job_args:
+            extra_vars:
+              reported_saturation_problem_type: "{{ event.title }}"
+              reporting_host: "{{ event.impactedEntities[0].name }}"
+              snow_inc_short_desc: "Dynatrace Reports: {{ event.title }}"
+              snow_inc_desc: "{{ event.title }} Reported on {{ event.impactedEntities[0].name }}. Reported by Dynatrace and forwarded to EDA"
+              snow_inc_urgency: "{{ snow_inc_urgency_choice | default('medium') }}"
+              snow_inc_impact: "{{ snow_inc_impact_choice | default('medium') }}"
