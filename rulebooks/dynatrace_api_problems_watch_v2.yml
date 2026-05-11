@@ -10,7 +10,7 @@
 
   rules:
     - name: Problem payload Dynatrace for CPU saturation issue
-      condition: event.entityTags[0].key == "Foxhound" and (event.title contains "saturation" or event.entityTags[0].name == "Memory" and event.title contains "saturation")
+      condition: event.entityTags[0].key == "Foxhound" and (event.title contains "CPU saturation" or event.title contains "Memory saturation")
       action:
         run_workflow_template:
           name: WF_EDA_Action_Dynatrace_report_and_resolve_saturation_issue
