@@ -30,7 +30,7 @@
       condition: event.entityTags[0].key == "environment" and event.entityTags[0].value == "Foxhound" and event.title contains "Storage saturation"
       action:
         run_workflow_template:
-          name: WF_EDA_Action_Dynatrace_report_and_resolve_saturation_issue
+          name: WF_EDA_Action_Dynatrace_windows_report_and_resolve_storage_issue
           organization: "{{ job_templates_org_name | default('Foxhound') }}"
           job_args:
             limit: "{{ event.impactedEntities[0].name }}"
