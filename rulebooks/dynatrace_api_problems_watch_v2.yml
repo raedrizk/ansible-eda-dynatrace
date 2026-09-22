@@ -9,8 +9,25 @@
         delay: "{{ dynatrace_delay }}"
 
   rules:
-    - name: Problem payload Dynatrace for CPU saturation issue
-      condition: event.entityTags[0].key == "environment" and event.entityTags[0].value == "Foxhound" and (event.title contains "CPU saturation" or event.title contains "Memory saturation")
+    - name: Problem payload Dynatrace for CPU and Memory saturation issue - Linux
+      condition: event.entityTags[0].key == "environment" and event.entityTags[0].value == "Foxhound" 
+                 and (event.title contains "CPU saturation" or event.title contains "Memory saturation")
+      action:
+        run_workflow_template:
+          name: WF_EDA_Action_Dynatrace_report_and_resolve_saturation_issue
+          organization: "{{ job_templates_org_name | default('Foxhound') }}"
+          job_args:
+            limit: "{{ event.impactedEntities[0].name }}"
+            extra_vars:
+              reported_saturation_problem_type: "{{ event.title }}"
+              reporting_host: "{{ event.impactedEntities[0].name }}"
+              snow_inc_short_desc: "Dynatrace Reports: {{ event.title }}"
+              snow_inc_desc: "{{ event.title }} Reported on {{ event.impactedEntities[0].name }}. Reported by Dynatrace and forwarded to EDA"
+              snow_inc_urgency: "{{ snow_inc_urgency_choice | default('medium') }}"
+              snow_inc_impact: "{{ snow_inc_impact_choice | default('medium') }}"
+
+    - name: Problem payload Dynatrace for Storage saturation issue - Windows
+      condition: event.entityTags[0].key == "environment" and event.entityTags[0].value == "Foxhound" and event.title contains "Storage saturation"
       action:
         run_workflow_template:
           name: WF_EDA_Action_Dynatrace_report_and_resolve_saturation_issue
