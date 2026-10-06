@@ -36,6 +36,7 @@
             extra_vars:
               event_payload:
                 event_data: "{{ event }}"
+                dynatrace_problem_id: "{{ event.problemId }}"
                 reporting_host: "{{ event.impactedEntities[0].name }}"
                 snow_inc_short_desc: "Dynatrace Reports: {{ event.title }}"
                 snow_inc_desc: "{{ event.title }} Reported on {{ event.impactedEntities[0].name }}. Reported by Dynatrace and forwarded to EDA"
